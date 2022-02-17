@@ -1,0 +1,8 @@
+About the Femuss doc team
+=========================
+
+
+Small team of very motivated people!
+
+.. image:: pictures/FemussLogo.png
+     :width: 400

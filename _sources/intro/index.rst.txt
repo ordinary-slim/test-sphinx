@@ -1,0 +1,8 @@
+Introduction
+============
+
+Small Sphinx example
+
+.. toctree::
+
+   about-the-team

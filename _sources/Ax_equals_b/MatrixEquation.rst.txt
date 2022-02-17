@@ -1,0 +1,11 @@
+The matrix equation
+===================
+
+FEM boilds down to
+
+.. math::
+
+   A x = b
+
+, where **A**, **x** and **b** are *complicated*!
+

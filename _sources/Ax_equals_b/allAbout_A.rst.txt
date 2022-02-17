@@ -1,0 +1,60 @@
+All about matrix A
+==================
+
+Matrix **A** can be assembled by iterating over the elements:
+
+.. code-block:: fortran
+
+    subroutine nsm_elmope(NSProblem)
+        use Mod_nsm_elmope
+        implicit none
+        class(NavierStokesProblem), target :: NSProblem
+
+        a=>NSProblem
+        !Set the Pointers for execution
+        ielem = 1
+        call SetPointers
+
+        !Set Time Integrator
+
+        !a subroutine which sets the
+        !TimeIntegrator data from the physical problem (a)
+        call php_SetTimeIntegrator(a,Integrator,LHSDtinv,nsteps)
+
+        !The mesh allocates the Finite Element e
+        call a%Mesh%ElementAlloc(e,a%Memor,'nsm_elmope')
+
+        call a%Mesh%GetNelem(nelem)
+        elements : do ielem = 1,nelem
+            !Load Element
+            call a%Mesh%ElementLoad(ielem,e)
+
+            !Gauss Point Loop
+            gauss_points : do igaus=1,e%pgaus
+
+                !This is peremptory so that the element
+                !knows which is the current gauss point
+                e%igaus = igaus
+                
+                !Compute contributions to RHS : Block U
+                call ProcPointer%nsm_elmrhu(e,dvol,testf,elext,elrhu)
+
+            enddo gauss_points
+
+            !Assembly
+            call a%LinearSystem%Assembly(e,elmat,elrhs)
+        enddo elements
+    end subroutine nsm_elmope(NSProblem)
+
+
+Matrix **A** can be the combination of a stiffness
+matrix **K** or a mass matrix **M**
+or even more types of matrices.
+The entries of **M** and **K** look like this:
+
+
+.. math::
+
+   M_{ij} = \int_\Omega \phi_i \phi_j
+   \qquad
+   K_{ij} = \int_\Omega \partial_x\phi_i \partial_x\phi_j
